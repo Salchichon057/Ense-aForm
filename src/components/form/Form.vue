@@ -29,6 +29,7 @@
 import Seccion from './Seccion.vue';
 
 export default {
+	inheritAttrs: false,
 	components: {
 		Seccion
 	}
@@ -46,6 +47,24 @@ h1 {
 h2 {
 	text-align: center;
 	font-size: 1.125rem;
+}
+
+.create {
+	position: fixed;
+	bottom: 1rem;
+	right: 1rem;
+	padding: 1rem;
+	border: none;
+	border-radius: 5px;
+	background-color: #e5282f;
+	color: #fff;
+	cursor: pointer;
+
+	transition: all 0.3s ease;
+}
+.create:hover {
+	background-color: #ff3d42;
+	box-shadow: 0 0 5px 0 #e5282f;
 }
 
 .form-container {
