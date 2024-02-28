@@ -126,7 +126,7 @@ export default {
 
 .button {
 	position: fixed;
-	width: 150px;
+	width: 160px;
 	bottom: 5rem;
 	right: 1rem;
 	background-color: #000;
