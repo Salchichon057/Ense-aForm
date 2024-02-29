@@ -105,37 +105,20 @@ export default {
 							let answers;
 							if (pregunta.tipo === 'range') {
 								answers = Array.from({ length: pregunta.rango + 1 }, (_, i) => i.toString());
-							} else {
+							} 
+							 else {
 								answers = pregunta.respuestas.map(respuesta => respuesta.texto);
 							}
 							return {
 								question: pregunta.texto,
 								answers: answers,
-								type: pregunta.tipo
+								type: pregunta.tipo === 'radio' ? 'single' : pregunta.tipo
 							};
 						})
 					}))
 				}
 			};
 			console.log(JSON.stringify(formData));
-
-			// Mandar el objeto formData a la API
-			fetch('http://localhost:8080/forms', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(formData)
-			}).then(response => {
-				if (response.ok) {
-					alert('Formulario creado exitosamente');
-					this.closeModal();
-				} else {
-					alert('Hubo un error al crear el formulario');
-				}
-			}).catch(error => {
-				console.error('Error:', error);
-			});
 		},
 		openModal() {
 			this.modal = true;
