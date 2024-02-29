@@ -32,10 +32,10 @@
 		</div>
 		<Seccion @update:secciones="secciones = $event" />
 	</section>
-	<button class="create" @click="openModal">Crear Formulario</button>
+	<button class="create" @click="openModal">Ver Formulario</button>
 
 	<!-- Crear un modal de confirmación -->
-	<transition name="modal">
+	<!-- <transition name="modal">
 		<div v-if="modal" class="modal">
 			<div class="modal-content">
 				<p>Revisa todos los campos antes de crear el formulario. ¿Estás seguro de que quieres crear el formulario?
@@ -43,6 +43,25 @@
 				<div class="modal-buttons">
 					<button @click="collectData">Si</button>
 					<button @click="closeModal">No</button>
+				</div>
+			</div>
+		</div>
+	</transition> -->
+
+	<transition name="modal">
+		<div v-if="modal" class="modal">
+			<div class="modal-content">
+				<!-- <p>Revisa todos los campos antes de crear el formulario. ¿Estás seguro de que quieres crear el formulario?</p> -->
+				<p>Este es el JSON del formulario que estás a punto de crear. Puedes copiarlo y pegarlo en el archivo de
+					configuración de formularios.</p>
+				<pre>{{ formDataJson }}</pre>
+				<!-- <button @click="copyFormDataJson" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+					Copiar JSON
+				</button> -->
+				<div class="modal-buttons">
+					<button @click="closeModal">Salir</button>
+					<button @click="copyFormDataJson">Copiar JSON</button>
+					<!-- <button @click="collectData">Si</button> -->
 				</div>
 			</div>
 		</div>
@@ -62,7 +81,8 @@ export default {
 			formDescription: '',
 			charCount: 0,
 			maxCharCount: 200,
-			modal: false
+			modal: false,
+			formDataJson: ''
 		}
 	},
 	methods: {
@@ -79,19 +99,6 @@ export default {
 			e.target.style.height = (e.target.scrollHeight + 5) + 'px';
 		},
 		collectData() {
-			// Verifica si algún campo está vacío
-			if (!this.secciones) {
-				alert('Debes agregar al menos una sección con preguntas');
-				return;
-			} else if (document.getElementById('formTitle').value === '') {
-				alert('Debes agregar un título al formulario');
-				return;
-			} else if (this.formDescription === '') {
-				alert('Debes agregar una descripción al formulario');
-				return;
-			}
-
-			// Si todos los campos están completos, crea el objeto formData
 			let formData = {
 				types_id: document.getElementById('formType').value,
 				habilitado: true,
@@ -105,8 +112,8 @@ export default {
 							let answers;
 							if (pregunta.tipo === 'range') {
 								answers = Array.from({ length: pregunta.rango + 1 }, (_, i) => i.toString());
-							} 
-							 else {
+							}
+							else {
 								answers = pregunta.respuestas.map(respuesta => respuesta.texto);
 							}
 							return {
@@ -119,13 +126,29 @@ export default {
 				}
 			};
 			console.log(JSON.stringify(formData));
+
+			this.formDataJson = JSON.stringify(formData, null, 2);
 		},
 		openModal() {
+			if (!this.secciones) {
+				alert('Debes agregar al menos una sección con preguntas');
+				return;
+			} else if (document.getElementById('formTitle').value === '') {
+				alert('Debes agregar un título al formulario');
+				return;
+			} else if (this.formDescription === '') {
+				alert('Debes agregar una descripción al formulario');
+				return;
+			}
+			this.collectData();
 			this.modal = true;
 		},
 		closeModal() {
 			this.modal = false;
-		}
+		},
+		copyFormDataJson() {
+			navigator.clipboard.writeText(this.formDataJson);
+		},
 	}
 }
 </script>
@@ -292,6 +315,24 @@ textarea {
 
 .modal-buttons button:nth-child(2):hover {
 	background-color: #ff3d42;
+}
+
+pre {
+	background-color: #f5f5f5;
+	border: 1px solid #ccc;
+	padding: 10px;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	text-align: left;
+	width: 100%;
+	height: 300px;
+	
+	overflow-y: scroll;
+	overflow-x: auto;
+}
+
+code {
+	font-family: monospace;
 }
 
 @media (max-width: 768px) {

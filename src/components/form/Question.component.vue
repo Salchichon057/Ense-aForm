@@ -12,6 +12,7 @@
 				<option value="radio">Opción</option>
 				<option value="range">Rango (Ejm. 0-5)</option>
 				<option value="multiple">Casilla</option>
+				<option value="subsection">Subtítulo</option>
 			</select>
 		</div>
 		<Respuesta v-for="(respuesta, indexRespuesta) in pregunta.respuestas" :key="indexRespuesta" :respuesta="respuesta"
@@ -27,6 +28,10 @@
 
 		<div v-if="pregunta.tipo === 'text'">
 			<p>Este tipo de pregunta no tiene respuestas</p>
+		</div>
+
+		<div v-if="pregunta.tipo === 'subsection'">
+			<p>Subtítulo no tiene respuestas</p>
 		</div>
 
 		<div class="buttons-content">
@@ -80,8 +85,13 @@ export default {
 	components: {
 		Respuesta
 	},
-	props: ['pregunta', 'index']
-
-
+	props: ['pregunta', 'index'],
+	watch: {
+		'pregunta.tipo': function(newVal, oldVal) {
+			if (newVal !== oldVal) {
+				this.pregunta.respuestas = [];
+			}
+		}
+	}
 }
 </script>
