@@ -105,13 +105,14 @@ export default {
 							let answers;
 							if (pregunta.tipo === 'range') {
 								answers = Array.from({ length: pregunta.rango + 1 }, (_, i) => i.toString());
-							} else {
+							} 
+							 else {
 								answers = pregunta.respuestas.map(respuesta => respuesta.texto);
 							}
 							return {
 								question: pregunta.texto,
 								answers: answers,
-								type: pregunta.tipo
+								type: pregunta.tipo === 'radio' ? 'single' : pregunta.tipo
 							};
 						})
 					}))
