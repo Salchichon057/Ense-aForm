@@ -14,10 +14,8 @@
 				:index="indexPregunta" @addAnswer="addAnswer(index, indexPregunta)"
 				@deleteLastAnswer="deleteLastAnswer(index, indexPregunta)"
 				@deleteQuestion="deleteQuestion(index, indexPregunta)" />
-
-
 		</div>
-		<button @click="openModal" class="delete-button">
+		<button @click="openModal(index)" class="delete-button">
 			<i class="fas fa-times"></i>
 		</button>
 	</div>
@@ -31,7 +29,7 @@
 			<div class="modal-content">
 				<p>¿Estás seguro de que quieres eliminar esta sección?</p>
 				<div class="modal-buttons">
-					<button @click="deleteSection(index)">Si</button>
+					<button @click="deleteSection">Si</button>
 					<button @click="closeModal">No</button>
 				</div>
 			</div>
@@ -50,7 +48,8 @@ export default {
 	data() {
 		return {
 			secciones: [],
-			modal: false
+			modal: false,
+			indexToDelete: null
 		}
 	},
 	methods: {
@@ -61,15 +60,20 @@ export default {
 					texto: '',
 					tipo: 'text',
 					respuestas: [],
-					rango: null
+					rango: {
+						min: 0,
+						max: 0
+					}
 				}]
 			});
 			this.$emit('update:secciones', this.secciones);
 		},
-		deleteSection(index) {
-			this.secciones.splice(index, 1);
+		deleteSection() {
+			this.secciones.splice(this.indexToDelete, 1);
 			this.modal = false;
 			this.$emit('update:secciones', this.secciones);
+			this.indexToDelete = null;
+			this.closeModal();
 		},
 		addAnswer(indexSeccion, indexPregunta) {
 			this.secciones[indexSeccion].preguntas[indexPregunta].respuestas.push({
@@ -78,19 +82,24 @@ export default {
 		},
 		deleteLastAnswer(indexSeccion, indexPregunta) {
 			this.secciones[indexSeccion].preguntas[indexPregunta].respuestas.pop();
+			this.closeModal();
 		},
 		addQuestion(indexSeccion) {
 			this.secciones[indexSeccion].preguntas.push({
 				texto: '',
 				tipo: 'text',
 				respuestas: [],
-				rango: null
+				rango: {
+					min: 0,
+					max: 0
+				}
 			});
 		},
 		deleteQuestion(indexSeccion, indexPregunta) {
 			this.secciones[indexSeccion].preguntas.splice(indexPregunta, 1);
 		},
-		openModal() {
+		openModal(index) {
+			this.indexToDelete = index;
 			this.modal = true;
 		},
 		closeModal() {
@@ -127,8 +136,8 @@ export default {
 .button {
 	position: fixed;
 	width: 160px;
-	bottom: 5rem;
-	right: 1rem;
+	bottom: calc(9rem - 4px);
+	right: calc(1rem - 2px);
 	background-color: #000;
 	border: none;
 	color: white;
@@ -373,6 +382,31 @@ export default {
 	font-weight: 700;
 }
 
+.range-container {
+	display: flex;
+	flex-flow: column nowrap !important;
+	justify-content: space-between;
+	gap: .5rem;
+}
+
+.range-container div {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 1rem;
+}
+
+.range-container input {
+	max-width: 100px;
+	border: 1px solid #d3d2d2;
+	border-radius: 5px;
+	padding: 0.5rem;
+}
+
+.range-container label {
+	width: 100%;
+}
 
 input,
 select,

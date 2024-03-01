@@ -19,10 +19,17 @@
 			:index="indexRespuesta" v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple'" />
 		<div v-if="pregunta.tipo === 'range'">
 			<label class="font-medium" :for="'formQuestion' + index + 'Answer'">Rango</label>
-			<div class="slider-container">
+			<!-- <div class="slider-container">
 				<input type="range" min="0" max="10" step="1" :name="'formQuestion' + index + 'Answer'"
 					:id="'formQuestion' + index + 'Answer'" v-model.number="pregunta.rango" class="slider" />
 				<div class="slider-value">{{ pregunta.rango }}</div>
+			</div> -->
+			<div class="range-container">
+				<label :for="'formQuestion' + index + 'Answer'">min - max</label>
+				<div>
+					<input type="number" placeholder="min" v-model="pregunta.rango.min" min="0" max="10">
+					<input type="number" placeholder="max" v-model="pregunta.rango.max" min="0" max="10">
+				</div>
 			</div>
 		</div>
 
@@ -55,7 +62,7 @@
 				<div class="modal-content">
 					<p>¿Estás seguro de que quieres eliminar esta pregunta?</p>
 					<div class="modal-buttons">
-						<button @click="$emit('deleteQuestion')">Si</button>
+						<button @click="deleteQuestion">Si</button>
 						<button @click="closeModal">No</button>
 					</div>
 				</div>
@@ -80,6 +87,10 @@ export default {
 		},
 		closeModal() {
 			this.modal = false;
+		},
+		deleteQuestion() {
+			this.$emit('deleteQuestion');
+			this.closeModal();
 		}
 	},
 	components: {
@@ -87,9 +98,32 @@ export default {
 	},
 	props: ['pregunta', 'index'],
 	watch: {
-		'pregunta.tipo': function(newVal, oldVal) {
+		'pregunta.tipo': function (newVal, oldVal) {
 			if (newVal !== oldVal) {
 				this.pregunta.respuestas = [];
+				if (newVal !== 'range') {
+					this.pregunta.rango = null;
+				} else if (!this.pregunta.rango) {
+					this.pregunta.rango = { min: 0, max: 0 };
+				}
+			}
+		},
+		'pregunta.rango.min': function (newVal, oldVal) {
+			if (this.pregunta.rango && newVal > this.pregunta.rango.max) {
+				alert('El valor mínimo no puede ser mayor que el valor máximo');
+				this.pregunta.rango.min = oldVal;
+			} else if (this.pregunta.rango && newVal === this.pregunta.rango.max && newVal !== 0) {
+				alert('El valor mínimo no puede ser igual al valor máximo');
+				this.pregunta.rango.min = oldVal;
+			}
+		},
+		'pregunta.rango.max': function (newVal, oldVal) {
+			if (this.pregunta.rango && newVal < this.pregunta.rango.min) {
+				alert('El valor máximo no puede ser menor que el valor mínimo');
+				this.pregunta.rango.max = oldVal;
+			} else if (this.pregunta.rango && newVal === this.pregunta.rango.min && newVal !== 0) {
+				alert('El valor máximo no puede ser igual al valor mínimo');
+				this.pregunta.rango.max = oldVal;
 			}
 		}
 	}

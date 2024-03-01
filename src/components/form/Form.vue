@@ -32,7 +32,8 @@
 		</div>
 		<Seccion @update:secciones="secciones = $event" />
 	</section>
-	<button class="create" @click="openModal">Ver Formulario</button>
+	<button class="create" @click="openModal">Ver Código</button>
+	<!-- <button class="preview">Previsualizar</button> -->
 
 	<!-- Crear un modal de confirmación -->
 	<!-- <transition name="modal">
@@ -111,7 +112,7 @@ export default {
 						questions: seccion.preguntas.map(pregunta => {
 							let answers;
 							if (pregunta.tipo === 'range') {
-								answers = Array.from({ length: pregunta.rango + 1 }, (_, i) => i.toString());
+								answers = Array.from({ length: pregunta.rango.max - pregunta.rango.min + 1 }, (_, i) => (i + pregunta.rango.min).toString());
 							}
 							else {
 								answers = pregunta.respuestas.map(respuesta => respuesta.texto);
@@ -148,6 +149,7 @@ export default {
 		},
 		copyFormDataJson() {
 			navigator.clipboard.writeText(this.formDataJson);
+			this.closeModal();
 		},
 	}
 }
@@ -169,7 +171,7 @@ h2 {
 .create {
 	position: fixed;
 	width: 160px;
-	bottom: 1rem;
+	bottom: 5rem;
 	right: 1rem;
 	padding: 1rem;
 	border: none;
@@ -184,6 +186,26 @@ h2 {
 .create:hover {
 	background-color: #ff3d42;
 	box-shadow: 0 0 5px 0 #e5282f;
+}
+
+.preview {
+	position: fixed;
+	width: 160px;
+	bottom: 1rem;
+	right: 1rem;
+	padding: 1rem;
+	border: none;
+	border-radius: 5px;
+	background-color: #0265b2;
+	color: #fff;
+	cursor: pointer;
+
+	transition: all 0.3s ease;
+}
+
+.preview:hover {
+	background-color: #0275ce;
+	box-shadow: 0 0 5px 0 #0265b2;
 }
 
 .form-container {
@@ -326,7 +348,7 @@ pre {
 	text-align: left;
 	width: 100%;
 	height: 300px;
-	
+
 	overflow-y: scroll;
 	overflow-x: auto;
 }
