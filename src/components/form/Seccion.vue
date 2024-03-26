@@ -63,7 +63,8 @@ export default {
 					rango: {
 						min: 0,
 						max: 0
-					}
+					},
+					download: ''
 				}]
 			});
 			this.$emit('update:secciones', this.secciones);

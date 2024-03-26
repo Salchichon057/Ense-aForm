@@ -113,6 +113,8 @@ export default {
 							let answers;
 							if (pregunta.tipo === 'range') {
 								answers = Array.from({ length: pregunta.rango.max - pregunta.rango.min + 1 }, (_, i) => (i + pregunta.rango.min).toString());
+							} else if (pregunta.tipo === 'download') {
+								answers = [pregunta.download];
 							}
 							else {
 								answers = pregunta.respuestas.map(respuesta => respuesta.texto);

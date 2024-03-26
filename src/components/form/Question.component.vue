@@ -7,16 +7,20 @@
 		</div>
 		<div>
 			<label class="font-medium" :for="'formQuestion' + index + 'Type'">Tipo de pregunta</label>
-			<select :name="'formQuestion' + index + 'Type'" :id="'formQuestion' + index + 'Type'" v-model="pregunta.tipo">
+			<select :name="'formQuestion' + index + 'Type'" :id="'formQuestion' + index + 'Type'"
+				v-model="pregunta.tipo">
 				<option value="text">Texto</option>
 				<option value="radio">Opción</option>
 				<option value="range">Rango (Ejm. 0-5)</option>
 				<option value="multiple">Casilla</option>
+				<option value="download">Link al Drive</option>
+				<option value="upload">Subir Archivo</option>
 				<option value="subsection">Subtítulo</option>
 			</select>
 		</div>
-		<Respuesta v-for="(respuesta, indexRespuesta) in pregunta.respuestas" :key="indexRespuesta" :respuesta="respuesta"
-			:index="indexRespuesta" v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple'" />
+		<Respuesta v-for="(respuesta, indexRespuesta) in pregunta.respuestas" :key="indexRespuesta"
+			:respuesta="respuesta" :index="indexRespuesta"
+			v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple'"/>
 		<div v-if="pregunta.tipo === 'range'">
 			<label class="font-medium" :for="'formQuestion' + index + 'Answer'">Rango</label>
 			<!-- <div class="slider-container">
@@ -39,6 +43,15 @@
 
 		<div v-if="pregunta.tipo === 'subsection'">
 			<p>Subtítulo no tiene respuestas</p>
+		</div>
+
+		<div v-if="pregunta.tipo === 'upload'">
+			<p>Esta pregunta no tiene respuestas, el usuario podrá subir un archivo desde su dispositivo</p>
+		</div>
+
+		<div v-if="pregunta.tipo === 'download'">
+			<label class="font-medium" :for="'formQuestion' + index + 'Answer'">Link al drive</label>
+			<input type="text" v-model="pregunta.download" />
 		</div>
 
 		<div class="buttons-content">
