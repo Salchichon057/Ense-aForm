@@ -81,7 +81,7 @@ export default {
 		return {
 			formDescription: '',
 			charCount: 0,
-			maxCharCount: 200,
+			maxCharCount: 100000,
 			modal: false,
 			formDataJson: ''
 		}
@@ -101,10 +101,10 @@ export default {
 		},
 		collectData() {
 			let formData = {
-				types_id: document.getElementById('formType').value,
-				habilitado: true,
-				fechalimite: document.getElementById('formDate').value,
-				preguntasdata: {
+				// types_id: document.getElementById('formType').value,
+				// habilitado: true,
+				// fechalimite: document.getElementById('formDate').value,
+				// preguntasdata: {
 					title: document.getElementById('formTitle').value,
 					description: this.formDescription,
 					sections: this.secciones.map(seccion => ({
@@ -126,9 +126,9 @@ export default {
 							};
 						})
 					}))
-				}
+				// }
 			};
-			console.log(JSON.stringify(formData));
+			// console.log(JSON.stringify(formData));
 
 			this.formDataJson = JSON.stringify(formData, null, 2);
 		},
