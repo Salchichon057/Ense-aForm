@@ -1,7 +1,7 @@
 <template>
 	<section class="form-container" id="form-container">
 		<div class="flex w-full flex-col justify-start">
-			<div class="part">
+			<!-- <div class="part">
 				<label for="formType" class="text-xl font-medium">Selecciona el tipo de formulario</label>
 				<select name="formType" id="formType">
 					<option value="6">Formulario General</option>
@@ -15,7 +15,7 @@
 			<div class="date flex flex-col justify-start">
 				<label for="formDate" class="text-xl font-medium">Fecha Límite</label>
 				<input type="date" name="formDate" id="formDate" class="w-36" />
-			</div>
+			</div> -->
 		</div>
 		<div class="part">
 			<label for="formTitle" class="text-xl font-medium">Título del formulario</label>
@@ -71,11 +71,10 @@
 
 <script>
 import Seccion from './Seccion.vue';
-
 export default {
 	inheritAttrs: false,
 	components: {
-		Seccion
+		Seccion,
 	},
 	data() {
 		return {
