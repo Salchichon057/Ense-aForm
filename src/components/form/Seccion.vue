@@ -64,7 +64,8 @@ export default {
 						min: 0,
 						max: 0
 					},
-					download: ''
+					download: '',
+					optional: ''
 				}]
 			});
 			this.$emit('update:secciones', this.secciones);

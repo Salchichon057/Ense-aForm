@@ -8,6 +8,10 @@
 
 <script>
 export default {
-	props: ['respuesta', 'index', 'indexRespuesta']
+	props: [
+		'respuesta',
+		'index',
+		'indexRespuesta',
+	]
 }
 </script>

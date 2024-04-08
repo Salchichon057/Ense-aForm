@@ -10,6 +10,7 @@
 			<select :name="'formQuestion' + index + 'Type'" :id="'formQuestion' + index + 'Type'"
 				v-model="pregunta.tipo">
 				<option value="text">Texto</option>
+				<option value="text-optional">Texto Opcional</option>
 				<option value="radio">Opción</option>
 				<option value="range">Rango (Ejm. 0-5)</option>
 				<option value="multiple">Casilla</option>
@@ -19,15 +20,11 @@
 			</select>
 		</div>
 		<Respuesta v-for="(respuesta, indexRespuesta) in pregunta.respuestas" :key="indexRespuesta"
-			:respuesta="respuesta" :index="indexRespuesta"
-			v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple'"/>
+			:respuesta="respuesta" :index="indexRespuesta" 
+			v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple' || pregunta.tipo === 'text-optional'" />
+
 		<div v-if="pregunta.tipo === 'range'">
 			<label class="font-medium" :for="'formQuestion' + index + 'Answer'">Rango</label>
-			<!-- <div class="slider-container">
-				<input type="range" min="0" max="10" step="1" :name="'formQuestion' + index + 'Answer'"
-					:id="'formQuestion' + index + 'Answer'" v-model.number="pregunta.rango" class="slider" />
-				<div class="slider-value">{{ pregunta.rango }}</div>
-			</div> -->
 			<div class="range-container">
 				<label :for="'formQuestion' + index + 'Answer'">min - max</label>
 				<div>
@@ -39,6 +36,13 @@
 
 		<div v-if="pregunta.tipo === 'text'">
 			<p>Este tipo de pregunta no tiene respuestas</p>
+		</div>
+
+		<div v-if="pregunta.tipo === 'text-optional'">
+			<p>Debe de haber al menos una respuesta llamada "Otro" o "No"</p>
+			<!-- agregar un campo para que aparezca la pregunta opcional -->
+			<label class="font-medium" :for="'formQuestion' + index + 'Answer'">Respuesta Opcional</label>
+			<input type="text" v-model="pregunta.optional" />
 		</div>
 
 		<div v-if="pregunta.tipo === 'subsection'">
@@ -56,12 +60,12 @@
 
 		<div class="buttons-content">
 			<button @click="$emit('addAnswer', index)" class=""
-				v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple'">
+				v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple' || pregunta.tipo === 'text-optional'">
 				Agregar Respuesta
 			</button>
 
 			<button @click="$emit('deleteLastAnswer', index, indexPregunta)" class=""
-				v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple'">
+				v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple' || pregunta.tipo === 'text-optional'">
 				Eliminar Respuesta
 			</button>
 		</div>

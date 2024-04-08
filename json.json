@@ -1,0 +1,48 @@
+{
+    "title": "Titulo form",
+    "description": "desc",
+    "sections": [
+        {
+            "sectionName": "Seccion 01",
+            "questions": [
+                {
+                    "question": "Texto 01",
+                    "answers": [],
+                    "type": "text"
+                },
+                {
+                    "question": "Pregunta 02",
+                    "answers": [
+                        "Respuesta 01",
+                        "Respuesta 02",
+                        "Otro"
+                    ],
+                    "type": "single"
+                },
+                {
+                    "question": "Pregunta Opcional de la respuesta 02",
+                    "type": "text-optional"
+                }
+            ]
+        },
+        {
+            "sectionName": "Seccion 02",
+            "questions": [
+                {
+                    "question": "Casiilla 01",
+                    "answers": [
+                        "Respuesta 01",
+                        "Respuesta 02",
+                        "Respuesta 03"
+                    ],
+                    "type": "multiple"
+                },
+                {
+                    "question": "Este es un subtítulo",
+                    "answers": [],
+                    "type": "subsection"
+                }
+            ]
+        }
+    ]
+}

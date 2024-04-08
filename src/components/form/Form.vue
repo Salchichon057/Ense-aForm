@@ -82,7 +82,7 @@ export default {
 			charCount: 0,
 			maxCharCount: 100000,
 			modal: false,
-			formDataJson: ''
+			formDataJson: '',
 		}
 	},
 	methods: {
@@ -104,27 +104,44 @@ export default {
 				// habilitado: true,
 				// fechalimite: document.getElementById('formDate').value,
 				// preguntasdata: {
-					title: document.getElementById('formTitle').value,
-					description: this.formDescription,
-					sections: this.secciones.map(seccion => ({
-						sectionName: seccion.nombre,
-						questions: seccion.preguntas.map(pregunta => {
-							let answers;
-							if (pregunta.tipo === 'range') {
-								answers = Array.from({ length: pregunta.rango.max - pregunta.rango.min + 1 }, (_, i) => (i + pregunta.rango.min).toString());
-							} else if (pregunta.tipo === 'download') {
-								answers = [pregunta.download];
-							}
-							else {
-								answers = pregunta.respuestas.map(respuesta => respuesta.texto);
-							}
-							return {
+				title: document.getElementById('formTitle').value,
+				description: this.formDescription,
+				sections: this.secciones.map(seccion => ({
+					sectionName: seccion.nombre,
+					questions: seccion.preguntas.map(pregunta => {
+						let answers;
+						if (pregunta.tipo === 'range') {
+							answers = Array.from({ length: pregunta.rango.max - pregunta.rango.min + 1 }, (_, i) => (i + pregunta.rango.min).toString());
+						} else if (pregunta.tipo === 'download') {
+							answers = [pregunta.download];
+						}
+						else if (pregunta.tipo === 'text-optional') {
+							answers = pregunta.respuestas.map(respuesta => respuesta.texto.trim());
+						} else {
+							answers = pregunta.respuestas.map(respuesta => respuesta.texto.trim());
+						}
+						let questions = [
+							{
 								question: pregunta.texto,
 								answers: answers,
-								type: pregunta.tipo === 'radio' ? 'single' : pregunta.tipo
-							};
-						})
-					}))
+								type: pregunta.tipo === 'radio' ? 'single' :
+									pregunta.tipo === 'text-optional' ? 'single' : pregunta.tipo
+							}
+						]
+						if (pregunta.tipo === 'text-optional') {
+							questions.push({
+								question: pregunta.optional,
+								type: 'text-optional',
+							});
+						}
+						return questions;
+						// return {
+						// 	question: pregunta.texto,
+						// 	answers: answers,
+						// 	type: pregunta.tipo === 'radio' ? 'single' : pregunta.tipo
+						// };
+					}).flat()
+				}))
 				// }
 			};
 			// console.log(JSON.stringify(formData));
@@ -132,6 +149,7 @@ export default {
 			this.formDataJson = JSON.stringify(formData, null, 2);
 		},
 		openModal() {
+			let isAnswerValid;
 			if (!this.secciones) {
 				alert('Debes agregar al menos una sección con preguntas');
 				return;
@@ -140,6 +158,12 @@ export default {
 				return;
 			} else if (this.formDescription === '') {
 				alert('Debes agregar una descripción al formulario');
+				return;
+			}
+			isAnswerValid = this.verifyOptionalType();
+			console.log("isAnswerValid", isAnswerValid);
+			if (!isAnswerValid) {
+				alert('Debe de haber al menos una respuesta llamada "Otro" o "No"');
 				return;
 			}
 			this.collectData();
@@ -152,6 +176,27 @@ export default {
 			navigator.clipboard.writeText(this.formDataJson);
 			this.closeModal();
 		},
+
+		verifyOptionalType() {
+			let isValid = false;
+			this.secciones.forEach(seccion => {
+				seccion.preguntas.forEach(pregunta => {
+					if (pregunta.tipo === 'text-optional') {
+						let hasOther = pregunta.respuestas.some(respuesta => respuesta.texto.toLowerCase().trim() === 'otro');
+						let hasNo = pregunta.respuestas.some(respuesta => respuesta.texto.toLowerCase().trim() === 'no');
+						console.log(hasOther, hasNo);
+						if (hasOther || hasNo) {
+							isValid = true;
+						} else {
+							isValid = false;
+						}
+					} else {
+						isValid = true;
+					}
+				});
+			});
+			return isValid;
+		}
 	}
 }
 </script>
