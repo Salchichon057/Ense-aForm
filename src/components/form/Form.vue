@@ -124,7 +124,7 @@ export default {
 								answers: answers,
 								type: pregunta.tipo === 'radio' ? 'single' :
 									pregunta.tipo === 'text-optional' ? 'single' : pregunta.tipo,
-								orientation: pregunta.orientacion || 'horizontal'
+								orientation: (pregunta.tipo === 'radio' || pregunta.tipo === 'multiple') ? pregunta.orientacion : undefined
 							}
 						]
 						if (pregunta.tipo === 'text-optional') {
@@ -224,6 +224,7 @@ h2 {
 	background-color: #ff3d42;
 	box-shadow: 0 0 5px 0 #e5282f;
 }
+
 .create2 {
 	position: fixed;
 	width: 160px;
