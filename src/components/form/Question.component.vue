@@ -72,6 +72,7 @@
 			<button @click="$emit('deleteLastAnswer', index, indexPregunta)"
 				v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple' || pregunta.tipo === 'text-optional'">Eliminar
 				Respuesta</button>
+			<button @click="$emit('duplicateQuestion', index)">Duplicar Pregunta</button>
 		</div>
 
 		<button @click="openModal" class="delete-button">

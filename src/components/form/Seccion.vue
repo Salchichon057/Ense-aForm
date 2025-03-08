@@ -13,7 +13,8 @@
 			<Pregunta v-for="(pregunta, indexPregunta) in seccion.preguntas" :key="indexPregunta" :pregunta="pregunta"
 				:index="indexPregunta" @addAnswer="addAnswer(index, indexPregunta)"
 				@deleteLastAnswer="deleteLastAnswer(index, indexPregunta)"
-				@deleteQuestion="deleteQuestion(index, indexPregunta)" />
+				@deleteQuestion="deleteQuestion(index, indexPregunta)"
+				@duplicateQuestion="duplicateQuestion(index, indexPregunta)" />
 		</div>
 		<button @click="openModal(index)" class="delete-button">
 			<i class="fas fa-times"></i>
@@ -99,6 +100,10 @@ export default {
 		},
 		deleteQuestion(indexSeccion, indexPregunta) {
 			this.secciones[indexSeccion].preguntas.splice(indexPregunta, 1);
+		},
+		duplicateQuestion(indexSeccion, indexPregunta) {
+			const pregunta = this.secciones[indexSeccion].preguntas[indexPregunta];
+			this.secciones[indexSeccion].preguntas.splice(indexPregunta + 1, 0, JSON.parse(JSON.stringify(pregunta)));
 		},
 		openModal(index) {
 			this.indexToDelete = index;
