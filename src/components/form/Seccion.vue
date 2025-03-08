@@ -138,7 +138,7 @@ export default {
 .button {
 	position: fixed;
 	width: 160px;
-	bottom: calc(9rem - 4px);
+	bottom: calc(16.7rem - 4px);
 	right: calc(1rem - 2px);
 	background-color: #000;
 	border: none;

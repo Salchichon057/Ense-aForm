@@ -1,25 +1,34 @@
 <template>
 	<div class="question-content">
 		<div>
-			<label class="font-medium" :for="'formQuestion' + index">{{ 'Pregunta ' + (index + 1).toString().padStart(2,
-				'0') }}</label>
+			<label class="font-medium" :for="'formQuestion' + index">{{ 'Pregunta ' + (index + 1).toString().padStart(2, '0')
+				}}</label>
 			<input type="text" :name="'formQuestion' + index" :id="'formQuestion' + index" v-model="pregunta.texto" />
 		</div>
 		<div>
 			<label class="font-medium" :for="'formQuestion' + index + 'Type'">Tipo de pregunta</label>
 			<select :name="'formQuestion' + index + 'Type'" :id="'formQuestion' + index + 'Type'" v-model="pregunta.tipo">
-				<option value="text">Texto</option>
-				<option value="text-optional">Texto Opcional</option>
-				<option value="radio">Opción</option>
-				<option value="range">Rango (Ejm. 0-5)</option>
-				<option value="multiple">Casilla</option>
+				<option value="text">Texto (Respuesta única)</option>
+				<option value="text-optional">Texto Opcional (Respuesta única)</option>
+				<option value="radio">Opción (Respuesta única)</option>
+				<option value="multiple">Casilla (Respuestas múltiples)</option>
+				<option value="range">Rango (Ejm. 0-10)</option>
 				<option value="download">Link al Drive</option>
 				<option value="upload">Subir Archivo</option>
 				<option value="subsection">Subtítulo</option>
 			</select>
 		</div>
+		<div v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple'">
+			<label class="font-medium">Orientación</label>
+			<div class="orientation-buttons">
+				<button :class="{ active: pregunta.orientacion === 'horizontal' }"
+					@click="pregunta.orientacion = 'horizontal'">Horizontal</button>
+				<button :class="{ active: pregunta.orientacion === 'vertical' }"
+					@click="pregunta.orientacion = 'vertical'">Vertical</button>
+			</div>
+		</div>
 		<Respuesta v-for="(respuesta, indexRespuesta) in pregunta.respuestas" :key="indexRespuesta" :respuesta="respuesta"
-			:index="indexRespuesta"
+			:index="index" :indexRespuesta="indexRespuesta"
 			v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple' || pregunta.tipo === 'text-optional'" />
 
 		<div v-if="pregunta.tipo === 'range'">
@@ -39,7 +48,6 @@
 
 		<div v-if="pregunta.tipo === 'text-optional'">
 			<p>Debe de haber al menos una respuesta llamada "Otro" o "No"</p>
-			<!-- agregar un campo para que aparezca la pregunta opcional -->
 			<label class="font-medium" :for="'formQuestion' + index + 'Answer'">Respuesta Opcional</label>
 			<input type="text" v-model="pregunta.optional" />
 		</div>
@@ -58,15 +66,12 @@
 		</div>
 
 		<div class="buttons-content">
-			<button @click="$emit('addAnswer', index)" class=""
-				v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple' || pregunta.tipo === 'text-optional'">
-				Agregar Respuesta
-			</button>
-
-			<button @click="$emit('deleteLastAnswer', index, indexPregunta)" class=""
-				v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple' || pregunta.tipo === 'text-optional'">
-				Eliminar Respuesta
-			</button>
+			<button @click="$emit('addAnswer', index)"
+				v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple' || pregunta.tipo === 'text-optional'">Agregar
+				Respuesta</button>
+			<button @click="$emit('deleteLastAnswer', index, indexPregunta)"
+				v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple' || pregunta.tipo === 'text-optional'">Eliminar
+				Respuesta</button>
 		</div>
 
 		<button @click="openModal" class="delete-button">
@@ -145,3 +150,31 @@ export default {
 	}
 }
 </script>
+
+<style>
+.orientation-buttons {
+	display: flex;
+	flex-direction: row !important;
+	gap: 0.5rem;
+}
+
+.orientation-buttons button {
+	min-width: 150px !important;
+	padding: 0.5rem 1rem;
+	border: 1px solid #d3d2d2;
+	border-radius: 5px;
+	background-color: #f9f9f9;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.orientation-buttons button.active {
+	background-color: #0265b2;
+	color: #fff;
+}
+
+.orientation-buttons button:hover {
+	background-color: #0280e0;
+	color: #fff;
+}
+</style>

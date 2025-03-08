@@ -15,13 +15,15 @@
 		</div>
 		<Seccion @update:secciones="secciones = $event" />
 	</section>
-	<button class="create" @click="openModal">Ver Código</button>
+	<button class="create1" @click="openModal('old')">Ver Código (Antiguo)</button>
+	<button class="create2" @click="openModal('new')">Ver Código (Nuevo)</button>
 
 	<transition name="modal">
 		<div v-if="modal" class="modal">
 			<div class="modal-content">
-				<p>Este es el JSON del formulario que estás a punto de crear. Puedes copiarlo y pegarlo en el archivo de configuración de formularios.</p>
-				<pre>{{ formDataJson }}</pre>
+				<p>Este es el JSON del formulario que estás a punto de crear. Puedes copiarlo y pegarlo en el archivo de
+					configuración de formularios.</p>
+				<pre>{{ modalFormat === 'old' ? formDataJson : formDataNewJson }}</pre>
 				<div class="modal-buttons">
 					<button @click="closeModal">Salir</button>
 					<button @click="copyFormDataJson">Copiar JSON</button>
@@ -45,6 +47,8 @@ export default {
 			maxCharCount: 100000,
 			modal: false,
 			formDataJson: '',
+			formDataNewJson: '',
+			modalFormat: 'old'
 		}
 	},
 	methods: {
@@ -95,13 +99,49 @@ export default {
 						return questions;
 					}).flat()
 				}))
-				// }
 			};
-			// console.log(JSON.stringify(formData));
+
+			let formDataNew = {
+				title: document.getElementById('formTitle').value,
+				description: this.formDescription,
+				sections: this.secciones.map(seccion => ({
+					sectionName: seccion.nombre,
+					questions: seccion.preguntas.map(pregunta => {
+						let answers;
+						if (pregunta.tipo === 'range') {
+							answers = Array.from({ length: pregunta.rango.max - pregunta.rango.min + 1 }, (_, i) => (i + pregunta.rango.min).toString());
+						} else if (pregunta.tipo === 'download') {
+							answers = [pregunta.download];
+						}
+						else if (pregunta.tipo === 'text-optional') {
+							answers = pregunta.respuestas.map(respuesta => respuesta.texto.trim());
+						} else {
+							answers = pregunta.respuestas.map(respuesta => respuesta.texto.trim());
+						}
+						let questions = [
+							{
+								question: pregunta.texto,
+								answers: answers,
+								type: pregunta.tipo === 'radio' ? 'single' :
+									pregunta.tipo === 'text-optional' ? 'single' : pregunta.tipo,
+								orientation: pregunta.orientacion || 'horizontal'
+							}
+						]
+						if (pregunta.tipo === 'text-optional') {
+							questions.push({
+								question: pregunta.optional,
+								type: 'text-optional',
+							});
+						}
+						return questions;
+					}).flat()
+				}))
+			};
 
 			this.formDataJson = JSON.stringify(formData, null, 2);
+			this.formDataNewJson = JSON.stringify(formDataNew, null, 2);
 		},
-		openModal() {
+		openModal(format) {
 			let isAnswerValid;
 			if (!this.secciones) {
 				alert('Debes agregar al menos una sección con preguntas');
@@ -114,22 +154,21 @@ export default {
 				return;
 			}
 			isAnswerValid = this.verifyOptionalType();
-			console.log("isAnswerValid", isAnswerValid);
 			if (!isAnswerValid) {
 				alert('Debe de haber al menos una respuesta llamada "Otro" o "No"');
 				return;
 			}
 			this.collectData();
+			this.modalFormat = format;
 			this.modal = true;
 		},
 		closeModal() {
 			this.modal = false;
 		},
 		copyFormDataJson() {
-			navigator.clipboard.writeText(this.formDataJson);
+			navigator.clipboard.writeText(this.modalFormat === 'old' ? this.formDataJson : this.formDataNewJson);
 			this.closeModal();
 		},
-
 		verifyOptionalType() {
 			let isValid = false;
 			this.secciones.forEach(seccion => {
@@ -137,7 +176,6 @@ export default {
 					if (pregunta.tipo === 'text-optional') {
 						let hasOther = pregunta.respuestas.some(respuesta => respuesta.texto.toLowerCase().trim() === 'otro');
 						let hasNo = pregunta.respuestas.some(respuesta => respuesta.texto.toLowerCase().trim() === 'no');
-						console.log(hasOther, hasNo);
 						if (hasOther || hasNo) {
 							isValid = true;
 						} else {
@@ -167,10 +205,10 @@ h2 {
 	font-size: 1.125rem;
 }
 
-.create {
+.create1 {
 	position: fixed;
 	width: 160px;
-	bottom: 5rem;
+	bottom: 11rem;
 	right: 1rem;
 	padding: 1rem;
 	border: none;
@@ -182,7 +220,26 @@ h2 {
 	transition: all 0.3s ease;
 }
 
-.create:hover {
+.create1:hover {
+	background-color: #ff3d42;
+	box-shadow: 0 0 5px 0 #e5282f;
+}
+.create2 {
+	position: fixed;
+	width: 160px;
+	bottom: 5.3rem;
+	right: 1rem;
+	padding: 1rem;
+	border: none;
+	border-radius: 5px;
+	background-color: #e5282f;
+	color: #fff;
+	cursor: pointer;
+
+	transition: all 0.3s ease;
+}
+
+.create2:hover {
 	background-color: #ff3d42;
 	box-shadow: 0 0 5px 0 #e5282f;
 }
