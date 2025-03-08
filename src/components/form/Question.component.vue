@@ -7,8 +7,7 @@
 		</div>
 		<div>
 			<label class="font-medium" :for="'formQuestion' + index + 'Type'">Tipo de pregunta</label>
-			<select :name="'formQuestion' + index + 'Type'" :id="'formQuestion' + index + 'Type'"
-				v-model="pregunta.tipo">
+			<select :name="'formQuestion' + index + 'Type'" :id="'formQuestion' + index + 'Type'" v-model="pregunta.tipo">
 				<option value="text">Texto</option>
 				<option value="text-optional">Texto Opcional</option>
 				<option value="radio">Opción</option>
@@ -19,8 +18,8 @@
 				<option value="subsection">Subtítulo</option>
 			</select>
 		</div>
-		<Respuesta v-for="(respuesta, indexRespuesta) in pregunta.respuestas" :key="indexRespuesta"
-			:respuesta="respuesta" :index="indexRespuesta" 
+		<Respuesta v-for="(respuesta, indexRespuesta) in pregunta.respuestas" :key="indexRespuesta" :respuesta="respuesta"
+			:index="indexRespuesta"
 			v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple' || pregunta.tipo === 'text-optional'" />
 
 		<div v-if="pregunta.tipo === 'range'">

@@ -1,22 +1,5 @@
 <template>
 	<section class="form-container" id="form-container">
-		<div class="flex w-full flex-col justify-start">
-			<!-- <div class="part">
-				<label for="formType" class="text-xl font-medium">Selecciona el tipo de formulario</label>
-				<select name="formType" id="formType">
-					<option value="6">Formulario General</option>
-					<option value="1">Formulario de Formación</option>
-					<option value="2">Formulario de Cultura</option>
-					<option value="3">Formulario de Acompañamiento</option>
-					<option value="4">Formulario de Núcleo</option>
-				</select>
-			</div>
-
-			<div class="date flex flex-col justify-start">
-				<label for="formDate" class="text-xl font-medium">Fecha Límite</label>
-				<input type="date" name="formDate" id="formDate" class="w-36" />
-			</div> -->
-		</div>
 		<div class="part">
 			<label for="formTitle" class="text-xl font-medium">Título del formulario</label>
 			<input type="text" name="formTitle" id="formTitle" />
@@ -33,36 +16,15 @@
 		<Seccion @update:secciones="secciones = $event" />
 	</section>
 	<button class="create" @click="openModal">Ver Código</button>
-	<!-- <button class="preview">Previsualizar</button> -->
-
-	<!-- Crear un modal de confirmación -->
-	<!-- <transition name="modal">
-		<div v-if="modal" class="modal">
-			<div class="modal-content">
-				<p>Revisa todos los campos antes de crear el formulario. ¿Estás seguro de que quieres crear el formulario?
-				</p>
-				<div class="modal-buttons">
-					<button @click="collectData">Si</button>
-					<button @click="closeModal">No</button>
-				</div>
-			</div>
-		</div>
-	</transition> -->
 
 	<transition name="modal">
 		<div v-if="modal" class="modal">
 			<div class="modal-content">
-				<!-- <p>Revisa todos los campos antes de crear el formulario. ¿Estás seguro de que quieres crear el formulario?</p> -->
-				<p>Este es el JSON del formulario que estás a punto de crear. Puedes copiarlo y pegarlo en el archivo de
-					configuración de formularios.</p>
+				<p>Este es el JSON del formulario que estás a punto de crear. Puedes copiarlo y pegarlo en el archivo de configuración de formularios.</p>
 				<pre>{{ formDataJson }}</pre>
-				<!-- <button @click="copyFormDataJson" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-					Copiar JSON
-				</button> -->
 				<div class="modal-buttons">
 					<button @click="closeModal">Salir</button>
 					<button @click="copyFormDataJson">Copiar JSON</button>
-					<!-- <button @click="collectData">Si</button> -->
 				</div>
 			</div>
 		</div>
@@ -100,10 +62,6 @@ export default {
 		},
 		collectData() {
 			let formData = {
-				// types_id: document.getElementById('formType').value,
-				// habilitado: true,
-				// fechalimite: document.getElementById('formDate').value,
-				// preguntasdata: {
 				title: document.getElementById('formTitle').value,
 				description: this.formDescription,
 				sections: this.secciones.map(seccion => ({
@@ -135,11 +93,6 @@ export default {
 							});
 						}
 						return questions;
-						// return {
-						// 	question: pregunta.texto,
-						// 	answers: answers,
-						// 	type: pregunta.tipo === 'radio' ? 'single' : pregunta.tipo
-						// };
 					}).flat()
 				}))
 				// }
