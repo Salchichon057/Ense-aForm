@@ -13,7 +13,7 @@
 				<div class="char-counter text-gray-500">{{ charCount }} / {{ maxCharCount }}</div>
 			</div>
 		</div>
-		<Seccion @update:secciones="secciones = $event" />
+		<Seccion :secciones="secciones" @update:secciones="secciones = $event" @duplicateSection="duplicateSection" />
 	</section>
 	<button class="create1" @click="openModal('old')">Ver Código (Antiguo)</button>
 	<button class="create2" @click="openModal('new')">Ver Código (Nuevo)</button>
@@ -48,7 +48,8 @@ export default {
 			modal: false,
 			formDataJson: '',
 			formDataNewJson: '',
-			modalFormat: 'old'
+			modalFormat: 'old',
+			secciones: []
 		}
 	},
 	methods: {
@@ -124,7 +125,7 @@ export default {
 								answers: answers,
 								type: pregunta.tipo === 'radio' ? 'single' :
 									pregunta.tipo === 'text-optional' ? 'single' : pregunta.tipo,
-								orientation: (pregunta.tipo === 'radio' || pregunta.tipo === 'multiple') ? pregunta.orientacion : undefined
+								orientation: pregunta.orientacion || 'horizontal'
 							}
 						]
 						if (pregunta.tipo === 'text-optional') {
@@ -187,6 +188,10 @@ export default {
 				});
 			});
 			return isValid;
+		},
+		duplicateSection(index) {
+			const seccion = this.secciones[index];
+			this.secciones.splice(index + 1, 0, JSON.parse(JSON.stringify(seccion)));
 		}
 	}
 }

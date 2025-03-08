@@ -2,7 +2,7 @@
 	<div class="question-content">
 		<div>
 			<label class="font-medium" :for="'formQuestion' + index">{{ 'Pregunta ' + (index + 1).toString().padStart(2, '0')
-				}}</label>
+			}}</label>
 			<input type="text" :name="'formQuestion' + index" :id="'formQuestion' + index" v-model="pregunta.texto" />
 		</div>
 		<div>
@@ -72,7 +72,7 @@
 			<button @click="$emit('deleteLastAnswer', index, indexPregunta)"
 				v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple' || pregunta.tipo === 'text-optional'">Eliminar
 				Respuesta</button>
-			<button @click="$emit('duplicateQuestion', index)">Duplicar Pregunta</button>
+			<button @click="$emit('duplicateQuestion', index)" class="duplicate-button">Duplicar Pregunta</button>
 		</div>
 
 		<button @click="openModal" class="delete-button">
@@ -177,5 +177,20 @@ export default {
 .orientation-buttons button:hover {
 	background-color: #0280e0;
 	color: #fff;
+}
+
+.duplicate-button {
+	width: 100%;
+	background-color: #0265b2;
+	color: #fff;
+	cursor: pointer;
+	border: none;
+	border-radius: 5px;
+	padding: 0.6rem 0;
+	transition: all 0.3s ease;
+}
+
+.duplicate-button:hover {
+	background-color: #0280e0;
 }
 </style>

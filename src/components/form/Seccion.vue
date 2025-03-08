@@ -5,9 +5,14 @@
 				<label class="text-xl font-medium" :for="'formSection' + index">Nombre de la Sección</label>
 				<input type="text" :name="'formSection' + index" :id="'formSection' + index" v-model="seccion.nombre" />
 			</div>
-			<button @click="addQuestion(index)" class="">
-				Agregar Pregunta
-			</button>
+			<div class="buttons-content">
+				<button @click="addQuestion(index)" class="">
+					Agregar Pregunta
+				</button>
+				<button @click="$emit('duplicateSection', index)" class="">
+					Duplicar Sección
+				</button>
+			</div>
 		</div>
 		<div class="part-seccion-content">
 			<Pregunta v-for="(pregunta, indexPregunta) in seccion.preguntas" :key="indexPregunta" :pregunta="pregunta"
@@ -46,9 +51,9 @@ export default {
 	components: {
 		Pregunta
 	},
+	props: ['secciones'],
 	data() {
 		return {
-			secciones: [],
 			modal: false,
 			indexToDelete: null
 		}
@@ -117,63 +122,14 @@ export default {
 </script>
 
 <style>
-.buttons-content {
-	grid-column: 1 / 3;
-	display: flex;
-	flex-flow: row nowrap !important;
-	justify-content: center;
-	gap: 1rem;
-}
-
-.buttons-content button {
-	width: 200px;
-	background-color: #0265b2;
-	color: #fff;
-	cursor: pointer;
-	border: none;
-	border-radius: 5px;
-	padding: 0.5rem 0;
-	transition: all 0.3s ease;
-}
-
-.buttons-content button:hover {
-	background-color: #0280e0;
-}
-
-.button {
-	position: fixed;
-	width: 160px;
-	bottom: calc(16.7rem - 4px);
-	right: calc(1rem - 2px);
-	background-color: #000;
-	border: none;
-	color: white;
-	padding: 1rem;
-	text-align: center;
-	text-decoration: none;
-	font-size: 16px;
-	text-wrap: balance;
-	margin: 4px 2px;
-	transition-duration: 0.4s;
-	cursor: pointer;
-	border-radius: 5px;
-}
-
-.button:hover {
-	background-color: #e5282f;
-	box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
-	color: white;
-}
-
 .part-seccion {
 	position: relative;
 	display: flex;
-	flex-flow: column wrap;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	gap: 1rem;
 	width: 100%;
-
 	border: 1px solid #0265b2;
 	border-radius: 5px;
 	padding: 1.2rem 1rem;
@@ -183,21 +139,21 @@ export default {
 .part-seccion-title {
 	width: 100%;
 	display: flex;
-	flex-flow: row nowrap;
+	flex-direction: row;
 	align-items: flex-start;
 	justify-content: space-between;
 	gap: 1rem;
-	align-items: flex-end;
 }
 
 .part-seccion-title div {
 	width: 100%;
 	display: flex;
-	flex-flow: column nowrap;
+	flex-direction: column;
+	align-items: flex-start;
 }
 
 .part-seccion-title button {
-	width: 170px;
+	width: 150px;
 	background-color: #0265b2;
 	color: #fff;
 	cursor: pointer;
@@ -214,15 +170,9 @@ export default {
 .part-seccion-content {
 	width: 100%;
 	display: flex;
-	flex-flow: column wrap;
+	flex-direction: column;
 	align-items: flex-start;
 	gap: 1rem;
-}
-
-.part-seccion-content div {
-	width: 100%;
-	display: flex;
-	flex-flow: column nowrap;
 }
 
 .part-seccion-content .question-content {
@@ -231,26 +181,32 @@ export default {
 	display: grid;
 	grid-template-columns: 3fr 1fr;
 	gap: 1rem;
-
 	border: 1px solid #d3d2d2;
 	border-radius: 5px;
 	padding: 1rem;
-
 }
 
 .part-seccion-content .question-content .answer-content {
 	grid-column: 1 / 3;
 	display: flex;
-	flex-flow: row nowrap;
+	flex-direction: row;
 	justify-content: center;
 	align-items: center;
 	gap: 1rem;
 	margin: 1rem 0;
-
 }
 
 .part-seccion-content .question-content .answer-content input {
 	width: 100%;
+}
+
+.buttons-content {
+	display: flex;
+	flex-direction: row !important;
+	align-items: center !important;
+	justify-content: center !important;
+	transform: translateY(10px);
+	gap: 1rem;
 }
 
 .delete-button {
@@ -262,17 +218,15 @@ export default {
 	width: 23px;
 	height: 23px;
 	background-color: #f9f9f9;
-
 	display: flex;
 	justify-content: center;
 	align-items: center;
-
 	transition: all 0.2s linear;
 }
 
 .delete-button:hover {
 	color: #ff3d42;
-	scale: 1.1;
+	transform: scale(1.1);
 }
 
 .modal-enter-active,
@@ -314,7 +268,7 @@ export default {
 
 .modal-buttons {
 	display: flex;
-	flex-flow: row nowrap !important;
+	flex-direction: row;
 	justify-content: center;
 	align-items: center;
 	gap: 1rem;
@@ -372,7 +326,7 @@ export default {
 	border-radius: 50%;
 	background: #0265b2;
 	cursor: pointer;
-	transition: background .3s ease-in-out;
+	transition: background 0.3s ease-in-out;
 }
 
 .slider::-webkit-slider-thumb:hover {
@@ -391,14 +345,14 @@ export default {
 
 .range-container {
 	display: flex;
-	flex-flow: column nowrap !important;
+	flex-direction: column;
 	justify-content: space-between;
-	gap: .5rem;
+	gap: 0.5rem;
 }
 
 .range-container div {
 	display: flex;
-	flex-flow: row nowrap;
+	flex-direction: row;
 	justify-content: flex-start;
 	align-items: center;
 	gap: 1rem;
@@ -432,5 +386,29 @@ textarea {
 	padding: 0.5rem;
 	border: 1px solid #d3d2d2;
 	border-radius: 5px;
+}
+
+.button {
+	position: fixed;
+	width: 160px;
+	bottom: calc(16.7rem - 4px);
+	right: calc(1rem - 2px);
+	background-color: #000;
+	border: none;
+	color: white;
+	padding: 1rem;
+	text-align: center;
+	text-decoration: none;
+	font-size: 16px;
+	margin: 4px 2px;
+	transition-duration: 0.4s;
+	cursor: pointer;
+	border-radius: 5px;
+}
+
+.button:hover {
+	background-color: #e5282f;
+	box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+	color: white;
 }
 </style>
