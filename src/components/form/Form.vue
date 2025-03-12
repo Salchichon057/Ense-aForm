@@ -69,9 +69,10 @@ export default {
 			let formData = {
 				title: document.getElementById('formTitle').value,
 				description: this.formDescription,
-				sections: this.secciones.map(seccion => ({
+				sections: this.secciones.map((seccion, sectionIndex) => ({
 					sectionName: seccion.nombre,
-					questions: seccion.preguntas.map(pregunta => {
+					sectionNumber: sectionIndex + 1,
+					questions: seccion.preguntas.map((pregunta, questionIndex) => {
 						let answers;
 						if (pregunta.tipo === 'range') {
 							answers = Array.from({ length: pregunta.rango.max - pregunta.rango.min + 1 }, (_, i) => (i + pregunta.rango.min).toString());
@@ -79,13 +80,20 @@ export default {
 							answers = [pregunta.download];
 						}
 						else if (pregunta.tipo === 'text-optional') {
-							answers = pregunta.respuestas.map(respuesta => respuesta.texto.trim());
+							answers = pregunta.respuestas.map((respuesta, answerIndex) => ({
+								answerText: respuesta.texto.trim(),
+								answerNumber: answerIndex + 1
+							}));
 						} else {
-							answers = pregunta.respuestas.map(respuesta => respuesta.texto.trim());
+							answers = pregunta.respuestas.map((respuesta, answerIndex) => ({
+								answerText: respuesta.texto.trim(),
+								answerNumber: answerIndex + 1
+							}));
 						}
 						let questions = [
 							{
 								question: pregunta.texto,
+								questionNumber: questionIndex + 1,
 								answers: answers,
 								type: pregunta.tipo === 'radio' ? 'single' :
 									pregunta.tipo === 'text-optional' ? 'single' : pregunta.tipo
@@ -105,9 +113,10 @@ export default {
 			let formDataNew = {
 				title: document.getElementById('formTitle').value,
 				description: this.formDescription,
-				sections: this.secciones.map(seccion => ({
+				sections: this.secciones.map((seccion, sectionIndex) => ({
 					sectionName: seccion.nombre,
-					questions: seccion.preguntas.map(pregunta => {
+					sectionNumber: sectionIndex + 1,
+					questions: seccion.preguntas.map((pregunta, questionIndex) => {
 						let answers;
 						if (pregunta.tipo === 'range') {
 							answers = Array.from({ length: pregunta.rango.max - pregunta.rango.min + 1 }, (_, i) => (i + pregunta.rango.min).toString());
@@ -115,13 +124,20 @@ export default {
 							answers = [pregunta.download];
 						}
 						else if (pregunta.tipo === 'text-optional') {
-							answers = pregunta.respuestas.map(respuesta => respuesta.texto.trim());
+							answers = pregunta.respuestas.map((respuesta, answerIndex) => ({
+								answerText: respuesta.texto.trim(),
+								answerNumber: answerIndex + 1
+							}));
 						} else {
-							answers = pregunta.respuestas.map(respuesta => respuesta.texto.trim());
+							answers = pregunta.respuestas.map((respuesta, answerIndex) => ({
+								answerText: respuesta.texto.trim(),
+								answerNumber: answerIndex + 1
+							}));
 						}
 						let questions = [
 							{
 								question: pregunta.texto,
+								questionNumber: questionIndex + 1,
 								answers: answers,
 								type: pregunta.tipo === 'radio' ? 'single' :
 									pregunta.tipo === 'text-optional' ? 'single' : pregunta.tipo,
