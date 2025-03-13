@@ -1,13 +1,15 @@
 <template>
 	<div class="question-content">
 		<div>
-			<label class="font-medium" :for="'formQuestion' + index">{{ 'Pregunta ' + (index + 1).toString().padStart(2, '0')
+			<label class="font-medium" :for="'formQuestion' + index">{{ 'Pregunta ' + (index + 1).toString().padStart(2,
+				'0')
 			}}</label>
 			<input type="text" :name="'formQuestion' + index" :id="'formQuestion' + index" v-model="pregunta.texto" />
 		</div>
 		<div>
 			<label class="font-medium" :for="'formQuestion' + index + 'Type'">Tipo de pregunta</label>
-			<select :name="'formQuestion' + index + 'Type'" :id="'formQuestion' + index + 'Type'" v-model="pregunta.tipo">
+			<select :name="'formQuestion' + index + 'Type'" :id="'formQuestion' + index + 'Type'"
+				v-model="pregunta.tipo">
 				<option value="text">Texto (Respuesta única)</option>
 				<option value="text-optional">Texto Opcional (Respuesta única)</option>
 				<option value="radio">Opción (Respuesta única)</option>
@@ -27,8 +29,8 @@
 					@click="pregunta.orientacion = 'vertical'">Vertical</button>
 			</div>
 		</div>
-		<Respuesta v-for="(respuesta, indexRespuesta) in pregunta.respuestas" :key="indexRespuesta" :respuesta="respuesta"
-			:index="index" :indexRespuesta="indexRespuesta"
+		<Respuesta v-for="(respuesta, indexRespuesta) in pregunta.respuestas" :key="indexRespuesta"
+			:respuesta="respuesta" :index="index" :indexRespuesta="indexRespuesta"
 			v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple' || pregunta.tipo === 'text-optional'" />
 
 		<div v-if="pregunta.tipo === 'range'">
@@ -73,6 +75,8 @@
 				v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple' || pregunta.tipo === 'text-optional'">Eliminar
 				Respuesta</button>
 			<button @click="$emit('duplicateQuestion', index)" class="duplicate-button">Duplicar Pregunta</button>
+			<button @click="$emit('moveQuestionUp', index)" v-if="index > 0">↑</button>
+			<button @click="$emit('moveQuestionDown', index)" v-if="index < totalPreguntas - 1">↓</button>
 		</div>
 
 		<button @click="openModal" class="delete-button">
@@ -118,7 +122,7 @@ export default {
 	components: {
 		Respuesta
 	},
-	props: ['pregunta', 'index'],
+	props: ['pregunta', 'index', 'totalPreguntas'],
 	watch: {
 		'pregunta.tipo': function (newVal, oldVal) {
 			if (newVal !== oldVal) {

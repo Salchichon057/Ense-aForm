@@ -12,14 +12,18 @@
 				<button @click="$emit('duplicateSection', index)" class="">
 					Duplicar Sección
 				</button>
+				<button @click="moveSectionUp(index)" v-if="index > 0">↑</button>
+				<button @click="moveSectionDown(index)" v-if="index < secciones.length - 1">↓</button>
 			</div>
 		</div>
 		<div class="part-seccion-content">
 			<Pregunta v-for="(pregunta, indexPregunta) in seccion.preguntas" :key="indexPregunta" :pregunta="pregunta"
-				:index="indexPregunta" @addAnswer="addAnswer(index, indexPregunta)"
-				@deleteLastAnswer="deleteLastAnswer(index, indexPregunta)"
+				:index="indexPregunta" :totalPreguntas="seccion.preguntas.length"
+				@addAnswer="addAnswer(index, indexPregunta)" @deleteLastAnswer="deleteLastAnswer(index, indexPregunta)"
 				@deleteQuestion="deleteQuestion(index, indexPregunta)"
-				@duplicateQuestion="duplicateQuestion(index, indexPregunta)" />
+				@duplicateQuestion="duplicateQuestion(index, indexPregunta)"
+				@moveQuestionUp="moveQuestionUp(index, indexPregunta)"
+				@moveQuestionDown="moveQuestionDown(index, indexPregunta, seccion.preguntas.length)" />
 		</div>
 		<button @click="openModal(index)" class="delete-button">
 			<i class="fas fa-times"></i>
@@ -109,6 +113,36 @@ export default {
 		duplicateQuestion(indexSeccion, indexPregunta) {
 			const pregunta = this.secciones[indexSeccion].preguntas[indexPregunta];
 			this.secciones[indexSeccion].preguntas.splice(indexPregunta + 1, 0, JSON.parse(JSON.stringify(pregunta)));
+		},
+		moveSectionUp(index) {
+			if (index > 0) {
+				const temp = this.secciones[index];
+				this.secciones.splice(index, 1);
+				this.secciones.splice(index - 1, 0, temp);
+			}
+		},
+		moveSectionDown(index) {
+			if (index < this.secciones.length - 1) {
+				const temp = this.secciones[index];
+				this.secciones.splice(index, 1);
+				this.secciones.splice(index + 1, 0, temp);
+			}
+		},
+		moveQuestionUp(indexSeccion, indexPregunta) {
+			if (indexPregunta > 0) {
+				const preguntas = this.secciones[indexSeccion].preguntas;
+				const temp = preguntas[indexPregunta];
+				preguntas.splice(indexPregunta, 1);
+				preguntas.splice(indexPregunta - 1, 0, temp);
+			}
+		},
+		moveQuestionDown(indexSeccion, indexPregunta, totalPreguntas) {
+			if (indexPregunta < totalPreguntas - 1) {
+				const preguntas = this.secciones[indexSeccion].preguntas;
+				const temp = preguntas[indexPregunta];
+				preguntas.splice(indexPregunta, 1);
+				preguntas.splice(indexPregunta + 1, 0, temp);
+			}
 		},
 		openModal(index) {
 			this.indexToDelete = index;
