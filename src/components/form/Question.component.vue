@@ -75,8 +75,8 @@
 				v-if="pregunta.tipo === 'radio' || pregunta.tipo === 'multiple' || pregunta.tipo === 'text-optional'">Eliminar
 				Respuesta</button>
 			<button @click="$emit('duplicateQuestion', index)" class="duplicate-button">Duplicar Pregunta</button>
-			<button @click="$emit('moveQuestionUp', index)" v-if="index > 0">↑</button>
-			<button @click="$emit('moveQuestionDown', index)" v-if="index < totalPreguntas - 1">↓</button>
+			<button class="q-up-button" @click="$emit('moveQuestionUp', index)" v-if="index > 0">↑</button>
+			<button class="q-down-button" @click="$emit('moveQuestionDown', index)" v-if="index < totalPreguntas - 1">↓</button>
 		</div>
 
 		<button @click="openModal" class="delete-button">
@@ -196,5 +196,33 @@ export default {
 
 .duplicate-button:hover {
 	background-color: #0280e0;
+}
+
+.q-up-button {
+	background-color: #208560;
+	color: #fff;
+	cursor: pointer;
+	border: none;
+	border-radius: 5px;
+	padding: 0.6rem 1rem;
+	transition: all 0.3s ease;
+}
+
+.q-up-button:hover {
+	background-color: #25a174;
+}
+
+.q-down-button {
+	background-color: #e5282f;
+	color: #fff;
+	cursor: pointer;
+	border: none;
+	border-radius: 5px;
+	padding: 0.6rem 1rem;
+	transition: all 0.3s ease;
+}
+
+.q-down-button:hover {
+	background-color: #ff3d42;
 }
 </style>

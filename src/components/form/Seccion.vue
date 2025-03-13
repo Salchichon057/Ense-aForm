@@ -12,8 +12,9 @@
 				<button @click="$emit('duplicateSection', index)" class="">
 					Duplicar Sección
 				</button>
-				<button @click="moveSectionUp(index)" v-if="index > 0">↑</button>
-				<button @click="moveSectionDown(index)" v-if="index < secciones.length - 1">↓</button>
+				<button class="up-button" @click="moveSectionUp(index)" v-if="index > 0">↑</button>
+				<button class="down-button" @click="moveSectionDown(index)"
+					v-if="index < secciones.length - 1">↓</button>
 			</div>
 		</div>
 		<div class="part-seccion-content">
@@ -444,5 +445,31 @@ textarea {
 	background-color: #e5282f;
 	box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
 	color: white;
+}
+
+.up-button {
+	background-color: #208560 !important;
+	width: 50px !important;
+	color: #ffffff !important;
+	font-weight: bold !important;
+	padding: 0.5rem 1rem !important;
+	border-radius: 5px !important;
+}
+
+.up-button:hover {
+	background-color: #25a174 !important;
+}
+
+.down-button {
+	background-color: #e5282f !important;
+	width: 50px !important;
+	border-radius: 5px !important;
+	color: #ffffff !important;
+	font-weight: bold !important;
+	padding: 0.5rem 1rem !important;
+}
+
+.down-button:hover {
+	background-color: #ff3d42 !important;
 }
 </style>
