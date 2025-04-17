@@ -17,6 +17,7 @@
 	</section>
 	<button class="create1" @click="openModal('old')">Ver Código (Antiguo)</button>
 	<button class="create2" @click="openModal('new')">Ver Código (Nuevo)</button>
+	<button class="generate-form" @click="openGenerateModal">Generar Formulario</button>
 
 	<transition name="modal">
 		<div v-if="modal" class="modal">
@@ -27,6 +28,19 @@
 				<div class="modal-buttons">
 					<button @click="closeModal">Salir</button>
 					<button @click="copyFormDataJson">Copiar JSON</button>
+				</div>
+			</div>
+		</div>
+	</transition>
+
+	<transition name="modal">
+		<div v-if="generateModal" class="modal">
+			<div class="modal-content">
+				<h2>Generar Formulario</h2>
+				<textarea v-model="jsonInput" placeholder="Ingrese el JSON aquí"></textarea>
+				<div class="modal-buttons">
+					<button @click="closeGenerateModal">Cancelar</button>
+					<button @click="generateForm">Generar</button>
 				</div>
 			</div>
 		</div>
@@ -46,6 +60,8 @@ export default {
 			charCount: 0,
 			maxCharCount: 100000,
 			modal: false,
+			generateModal: false,
+			jsonInput: '',
 			formDataJson: '',
 			formDataNewJson: '',
 			modalFormat: 'old',
@@ -182,6 +198,75 @@ export default {
 		closeModal() {
 			this.modal = false;
 		},
+		openGenerateModal() {
+			this.jsonInput = '';
+			this.generateModal = true;
+		},
+		closeGenerateModal() {
+			this.generateModal = false;
+			this.jsonInput = '';
+		},
+		generateForm() {
+			try {
+				const jsonData = JSON.parse(this.jsonInput);
+				if (!jsonData.title || !jsonData.description || !jsonData.sections) {
+					alert('El JSON debe contener "title", "description" y "sections"');
+					return;
+				}
+
+				// Set title
+				document.getElementById('formTitle').value = jsonData.title;
+				// Set description
+				this.formDescription = jsonData.description;
+				this.charCount = this.formDescription.length;
+
+				// Clear existing sections
+				this.secciones = [];
+
+				// Populate sections
+				jsonData.sections.forEach(section => {
+					const newSection = {
+						nombre: section.sectionName || '',
+						preguntas: []
+					};
+
+					section.questions.forEach((question, index) => {
+						const questionType = question.type === 'single' && question.answers.some(ans => ans.answerText) ? 'radio' : question.type;
+						const newQuestion = {
+							texto: question.question || '',
+							tipo: questionType,
+							respuestas: [],
+							rango: questionType === 'range' ? { min: 0, max: 0 } : null,
+							download: questionType === 'download' ? (question.answers[0] || '') : '',
+							optional: questionType === 'text-optional' && index + 1 < section.questions.length && section.questions[index + 1].type === 'text-optional' ? section.questions[index + 1].question : '',
+							orientacion: question.orientation || 'horizontal'
+						};
+
+						if (['radio', 'multiple', 'text-optional'].includes(questionType)) {
+							newQuestion.respuestas = question.answers.filter(ans => ans.answerText).map(ans => ({
+								texto: ans.answerText
+							}));
+						} else if (questionType === 'range') {
+							const answerNumbers = question.answers.map(Number);
+							newQuestion.rango.min = Math.min(...answerNumbers);
+							newQuestion.rango.max = Math.max(...answerNumbers);
+						}
+
+						// Only add the main question, skip the optional text field for text-optional
+						if (!(questionType === 'text-optional' && index > 0 && section.questions[index - 1].type === 'single')) {
+							newSection.preguntas.push(newQuestion);
+						}
+					});
+
+					this.secciones.push(newSection);
+				});
+
+				this.$emit('update:secciones', this.secciones);
+				this.closeGenerateModal();
+			} catch (e) {
+				alert('JSON inválido. Por favor, verifica el formato.');
+			}
+		},
 		copyFormDataJson() {
 			navigator.clipboard.writeText(this.modalFormat === 'old' ? this.formDataJson : this.formDataNewJson);
 			this.closeModal();
@@ -237,7 +322,6 @@ h2 {
 	background-color: #e5282f;
 	color: #fff;
 	cursor: pointer;
-
 	transition: all 0.3s ease;
 }
 
@@ -257,7 +341,6 @@ h2 {
 	background-color: #e5282f;
 	color: #fff;
 	cursor: pointer;
-
 	transition: all 0.3s ease;
 }
 
@@ -266,10 +349,10 @@ h2 {
 	box-shadow: 0 0 5px 0 #e5282f;
 }
 
-.preview {
+.generate-form {
 	position: fixed;
 	width: 160px;
-	bottom: 1rem;
+	bottom: 20.8rem;
 	right: 1rem;
 	padding: 1rem;
 	border: none;
@@ -277,11 +360,10 @@ h2 {
 	background-color: #0265b2;
 	color: #fff;
 	cursor: pointer;
-
 	transition: all 0.3s ease;
 }
 
-.preview:hover {
+.generate-form:hover {
 	background-color: #0275ce;
 	box-shadow: 0 0 5px 0 #0265b2;
 }
@@ -316,7 +398,6 @@ h2 {
 	right: 10px;
 }
 
-
 input,
 select,
 textarea {
@@ -325,8 +406,10 @@ textarea {
 
 textarea {
 	resize: none;
+	padding: 0.5rem;
+	border: 1px solid #d3d2d2;
+	border-radius: 5px;
 }
-
 
 select {
 	padding: 0.5rem;
@@ -340,7 +423,6 @@ textarea {
 	border: 1px solid #d3d2d2;
 	border-radius: 5px;
 }
-
 
 .modal-enter-active,
 .modal-leave-active {
@@ -366,6 +448,7 @@ textarea {
 }
 
 .modal-content {
+	min-width: 400px;
 	max-width: 500px;
 	background-color: #fff;
 	padding: 1rem;
@@ -377,6 +460,15 @@ textarea {
 	justify-content: center;
 	text-align: center;
 	gap: 1rem;
+}
+
+.modal-content textarea {
+	width:	100%;
+	height: 300px;
+	padding: 0.5rem;
+	border: 1px solid #d3d2d2;
+	border-radius: 5px;
+	resize: vertical;
 }
 
 .modal-buttons {
@@ -426,7 +518,6 @@ pre {
 	text-align: left;
 	width: 100%;
 	height: 300px;
-
 	overflow-y: scroll;
 	overflow-x: auto;
 }
@@ -451,7 +542,6 @@ code {
 	.part {
 		margin: 0.5rem;
 	}
-
 }
 
 @media (max-width: 425px) {
