@@ -113,7 +113,12 @@ export default {
 		},
 		duplicateQuestion(indexSeccion, indexPregunta) {
 			const pregunta = this.secciones[indexSeccion].preguntas[indexPregunta];
-			this.secciones[indexSeccion].preguntas.splice(indexPregunta + 1, 0, JSON.parse(JSON.stringify(pregunta)));
+			const duplicatedPregunta = JSON.parse(JSON.stringify(pregunta));
+			duplicatedPregunta.respuestas = Array.isArray(pregunta.respuestas)
+				? pregunta.respuestas.map(respuesta => ({ texto: respuesta.texto || '' }))
+				: [];
+			this.secciones[indexSeccion].preguntas.splice(indexPregunta + 1, 0, duplicatedPregunta);
+			this.$emit('update:secciones', this.secciones);
 		},
 		moveSectionUp(index) {
 			if (index > 0) {
